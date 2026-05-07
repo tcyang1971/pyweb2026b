@@ -37,7 +37,33 @@ def index():
     link += "<a href=/read2>讀取Firestore資料(根據姓名關鍵字:楊)</a><hr>"
     link += "<a href=/spider1>爬取子青老師課程資料</a><hr>"
     link += "<a href=/spiderMovie>爬取即將上映電影</a><hr>"
+    link += "<a href=/road>台中市十大肇事路口</a><hr>"
     return link
+
+@app.route("/road")
+def road():
+    R = "<h1>台中市十大肇事路口(113年10月)</h1><br>"
+
+    url = "https://datacenter.taichung.gov.tw/swagger/OpenData/a1b899c0-511f-4e3d-b22b-814982a97e41"
+
+    # 1. 準備帽子 (Headers)
+    headers = {'User-Agent': 'Mozilla/5.0'}
+
+    # 設定 Header，讓伺服器以為是正常的瀏覽器在訪問
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+
+    # 2. 把參數加進去
+    Data = requests.get(url, headers=headers, timeout=10)
+    #print(Data.text)
+
+    JsonData = json.loads(Data.text)
+    for item in JsonData:
+        R += item["路口名稱"] + ",原因:" + item["主要肇因"] + "<br>"
+
+    return R
+
 
 
 @app.route("/spiderMovie")
